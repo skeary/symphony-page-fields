@@ -39,8 +39,21 @@ so this extension hopefully improves the usability for this approach.
 2. Enable it by selecting the "Page Fields", choose Enable from the 
    with-selected menu, then click Apply.
 
+   
+[NOTES]
+
+For each configured page this extension will create a page fields section with name 'pfpfpfpf <page_title>'
+and handle 'pfpfpfpf-<page_handle>'.  For all practical purposes this should not be visible to the user
+since these sections are not listed under the section list and the edit section page will hide these
+attributes for page fields sections.  The handle will be reflected in the edit section urls and data source, however.
+You can change these prefixes if you like by editing lib/page_fields_defines.php.
+
 
 [CHANGES]
 
 1.0
 - Initial release
+
+1.0.1
+- Correct "Page Title" links on Blueprints/Pages Fields admin page.
+

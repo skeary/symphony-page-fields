@@ -18,7 +18,7 @@
 		{
 			return array(
 				'name'         => 'Page Fields',
-				'version'      => '1.0',
+				'version'      => '1.0.1',
 				'release-date' => '2009-06-28',
 				'author'       => array(
 					'name'    => 'Simon Keary',
@@ -51,6 +51,16 @@
 					'page' => '/administration/',
 					'delegate' => 'AdminPagePostGenerate',
 					'callback' => 'customiseAdminPageOutput'
+				),
+				array(
+					'page' => '/system/preferences/',
+					'delegate' => 'AddCustomPreferenceFieldsets',
+					'callback' => 'displayPreferences'
+				),
+				array(
+					'page' => '/system/preferences/',
+					'delegate' => 'Save',
+					'callback' => 'savePreferences'
 				)
 			);
 		}
@@ -287,7 +297,7 @@
 			//
 			$pageContentMenu = array(
 				'index' => 10,
-				'name' => __('Page Content'),
+				'name' => $this->getPageContentMenuLabel(),
 				'children' => $childMenuItems
 			);
 
@@ -301,6 +311,65 @@
 				'visible' => 'yes'
 			);
 			$context['navigation'][100]['children'][] = $pageFieldsMenuItem;  
+		}
+		
+
+		/**
+		 * Saves the Page Fields preferences.
+		 *
+		 * @param array context The context for the page.
+		 */
+		public function savePreferences($context)
+		{
+			$newMenuLabelText = $_POST['page_fields']['page_content_menu_label'];
+			$this->_Parent->Configuration->set('page_content_menu_label', $newMenuLabelText, 'page_fields');
+		}
+		
+		
+		/**
+		 * Add the Page Field preferences to the display/edit preference admin page.
+		 *
+		 * @param array context The context for the page.
+		 */
+		public function displayPreferences($context)
+		{
+			$group = new XMLElement('fieldset');
+			$group->setAttribute('class', 'settings');
+			$group->appendChild(new XMLElement('legend', 'Page Fields'));			
+
+			$label = Widget::Label('Page Content Menu Label');
+			$label->appendChild(
+				Widget::Input('page_fields[page_content_menu_label]', $this->getPageContentMenuLabel())
+			);
+
+			$group->appendChild($label);
+						
+			$group->appendChild(
+				new XMLElement(
+					'p',
+					'Indicates the text label used for the menu to edit page field values. ' .
+					'By default this is \'' .  __('Page Content') . '\'.', 
+					array('class' => 'help')
+				)
+			);
+
+			$context['wrapper']->appendChild($group);
+		}
+		
+		
+		/**
+		 * Gets the configured 'Page Content' menu label text.
+		 *
+		 * @return The configured label text.
+		 */
+		private function getPageContentMenuLabel()
+		{
+			$menuLabel = $this->_Parent->Configuration->get('page_content_menu_label', 'page_fields');
+			if ($menuLabel === NULL)
+			{
+				$menuLabel = __('Page Content');
+			}
+			return $menuLabel;					
 		}
 	}
 

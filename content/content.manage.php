@@ -94,7 +94,7 @@
 			$class = array();
 			$pageTitle = $this->_Parent->resolvePageTitle($page['id']);
 			$pageUrl = URL . '/' . $this->_Parent->resolvePagePath($page['id']) . '/';
-			$pageEditUrl = $this->_Parent->getCurrentPageURL() . 'edit/' . $page['id'] . '/';
+			$pageEditUrl = URL . '/symphony/blueprints/pages/edit/' . $page['id'] . '/';
 			
 			$colTitle = Widget::TableData(
 				Widget::Anchor($pageTitle, $pageEditUrl, $page['handle'])
