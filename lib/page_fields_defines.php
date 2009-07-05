@@ -5,7 +5,6 @@
 	 */
 
 
-	define('PF_SECTION_HANDLE_PREFIX', 'pfpfpfpf-');
-	define('PF_SECTION_TITLE_PREFIX', 'pfpfpfpf ');
+	define('PF_SECTION_TITLE_PREFIX', 'PAGE FIELDS SECTION ');
 	define('PF_MANAGE_URL', '/symphony/extension/page_fields/manage/');
 ?>

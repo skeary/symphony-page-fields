@@ -1,12 +1,12 @@
 Page Fields
 -------------------------------------------------------------------------------
 
-Version: 1.0
+Version: 1.0.3
 Author: Simon Keary
-Build Date: 2009-07-03
+Build Date: 2009-07-05
 Requirements: Symphony 2.0.3 or greater
 
-Compatibilty: Tested on Symphony 2.0.3 (2009-07-03)
+Compatibilty: Tested on Symphony 2.0.3 (2009-07-05)
 
 This extension aims to to improve the usability of Symphony and provide a simple
 way to associate developer-defined content blocks or fields for pages and simple
@@ -56,4 +56,7 @@ You can change these prefixes if you like by editing lib/page_fields_defines.php
 
 1.0.1
 - Correct "Page Title" links on Blueprints/Pages Fields admin page.
+- Added configuration option to allow use to change "Page Content" menu label.
 
+1.0.2
+- Changed PF section handles to contain the page id rather than handle.  This makes the mapping between pages and PF sections tolerant of changes to page handles.  Naming of PF sections has also cleaned up a bit.

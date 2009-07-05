@@ -29,12 +29,18 @@
 			// Retrieve all pages and, if applicable, the section id of the associated
 			// page fields section.
 			//
+			$pfSectionHandlePrefix = Lang::createHandle(PF_SECTION_TITLE_PREFIX);
+			if (strrpos(PF_SECTION_TITLE_PREFIX, ' ') === strlen(PF_SECTION_TITLE_PREFIX) - 1)
+			{
+				$pfSectionHandlePrefix .= '-';
+			}
+
 			$pages = $this->_Parent->Database->fetch(
 				"SELECT
 					p.*, s.id as section_id
 				FROM
 					`tbl_pages` AS p LEFT OUTER JOIN `tbl_sections` AS s
-				ON (s.handle = CONCAT('" . PF_SECTION_HANDLE_PREFIX . "', p.handle))
+				ON (s.handle = CONCAT('" . $pfSectionHandlePrefix . "', p.id))
 				ORDER BY
 					p.sortorder ASC"
 			);
@@ -155,9 +161,9 @@
 			// Initialise details of the new section.
 			//
 			$newSectionDetails['sortorder'] = ($nextSectionId ? $nextSectionId : '1');
-			$newSectionDetails['handle'] = PF_SECTION_HANDLE_PREFIX . $pageRow['handle'];
+			$newSectionDetails['handle'] = Lang::createHandle(PF_SECTION_TITLE_PREFIX . $pageId);
 			$newSectionDetails['navigation_group'] = 'Content';
-			$newSectionDetails['name'] = PF_SECTION_TITLE_PREFIX . $pageRow['title'];
+			$newSectionDetails['name'] = PF_SECTION_TITLE_PREFIX . $pageId;
 			$newSectionDetails['hidden'] = 'yes';
 
 			// Create the section and then display the (now updated) index page.

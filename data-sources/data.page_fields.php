@@ -55,7 +55,7 @@
 				'author' => array(
 					'name' => 'Simon Keary',
 					'website' => 'http://www.birdstudios.com.au',
-					'email' => 'info@birdstudios.com.au'
+					'email' => 'hello@birdstudios.com.au'
 				),
 				'version' => '1.0',
 				'release-date' => '2009-07-01T15:20:20+00:00'
@@ -92,8 +92,8 @@
 		{
 			// Get the handle of the PF section associated with the page.
 			//
-			$pageHandle = $env['param']['current-page'];
-			$pageFieldsSectionHandle = PF_SECTION_HANDLE_PREFIX . $pageHandle;
+			$pageId = $env['param']['current-page-id'];
+			$pageFieldsSectionHandle = Lang::createHandle(PF_SECTION_TITLE_PREFIX . $pageId);
 
 			// Retrieve and store the Id of the section so we can return it from getSource()
 			//

@@ -18,12 +18,12 @@
 		{
 			return array(
 				'name'         => 'Page Fields',
-				'version'      => '1.0.1',
-				'release-date' => '2009-06-28',
+				'version'      => '1.0.2',
+				'release-date' => '2009-07-05',
 				'author'       => array(
 					'name'    => 'Simon Keary',
 					'website' => 'http://www.birdstudios.com.au',
-					'email'   => 'info@birdstudios.com.au'
+					'email'   => 'hello@birdstudios.com.au'
 				)
 			);
 		}
@@ -157,7 +157,16 @@
 			
 			if (strpos($h2->nodeValue, PF_SECTION_TITLE_PREFIX) === 0)
 			{
-				$associatedPageName = substr($h2->nodeValue, strlen(PF_SECTION_TITLE_PREFIX));
+				$pageId = substr($h2->nodeValue, strlen(PF_SECTION_TITLE_PREFIX));
+				
+				$getPageTitleQuery = 'SELECT `title` FROM tbl_pages WHERE id=\'' . $pageId . '\'';
+				$associatedPageName = $this->_Parent->Database->fetchVar('title', 0, $getPageTitleQuery);
+				if ($associatedPageName === NULL)
+				{
+					// If we can't locate the page name fall back to the specified page id.
+					//
+					$associatedPageName = $pageId;
+				}
 
 				$title = $dom->getElementsByTagName('title')->item(0);
 				$h2->nodeValue = 'Page Fields For ' . $associatedPageName;
@@ -185,10 +194,26 @@
 			$title = $dom->getElementsByTagName('title')->item(0);
 
 			$pfSectionTitlePrefixPos = strpos($title->nodeValue, PF_SECTION_TITLE_PREFIX); 
+
 			if ($pfSectionTitlePrefixPos > 0)
 			{
-				$titleRHS = 'Page Fields For ' . substr($title->nodeValue, $pfSectionTitlePrefixPos + strlen(PF_SECTION_TITLE_PREFIX)); 
-				$title->nodeValue = 'Symphony &ndash; ' . $titleRHS;
+				$pageId = substr($title->nodeValue, $pfSectionTitlePrefixPos + strlen(PF_SECTION_TITLE_PREFIX));
+				$pageId = substr($pageId, 0, strpos($pageId, ' '));
+				
+				$getPageTitleQuery = 'SELECT `title` FROM tbl_pages WHERE id=\'' . $pageId . '\'';
+				$associatedPageName = $this->_Parent->Database->fetchVar('title', 0, $getPageTitleQuery);
+				
+				$title->nodeValue = 'Symphony &ndash; ' . $this->getPageContentMenuLabel() . ' for ' . $associatedPageName;
+			}
+			
+			$buttons = $dom->getElementsByTagName('button');
+			foreach ($buttons as $button)
+			{
+				if ($button->getAttribute('name') === 'action[delete]')
+				{
+					$button->parentNode->removeChild($button);
+					break;
+				}
 			}
 		}
 
@@ -253,12 +278,17 @@
 		
 			// Get all the pages that have associated Page Field sections.
 			//
+			$pfSectionHandlePrefix = Lang::createHandle(PF_SECTION_TITLE_PREFIX);
+			if (strrpos(PF_SECTION_TITLE_PREFIX, ' ') === strlen(PF_SECTION_TITLE_PREFIX) - 1)
+			{
+				$pfSectionHandlePrefix .= '-';
+			}
 			$pages = $this->_Parent->Database->fetch(
 				"SELECT
 					p.*, s.id as section_id, s.handle as section_handle
 				FROM
 					`tbl_pages` AS p INNER JOIN `tbl_sections` AS s
-				ON (s.handle = CONCAT('" . PF_SECTION_HANDLE_PREFIX . "', p.handle))
+				ON (s.handle = CONCAT('" . $pfSectionHandlePrefix . "', p.id))
 				ORDER BY
 					p.sortorder ASC"
 			);
